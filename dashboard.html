@@ -133,22 +133,19 @@ tr:hover td { background: #fafffe; }
 </div>
 
 <script>
-// Access code: jasonsagar18
-const CODE_HASH = 'b26d6016';
-function simpleHash(s) {
-  let h = 0;
-  for (let i = 0; i < s.length; i++) { h = ((h << 5) - h) + s.charCodeAt(i); h |= 0; }
-  return (h >>> 0).toString(16);
-}
+const API_BASE = 'https://web-production-2d2ae.up.railway.app';
+function adminKey() { return sessionStorage.getItem('ko_admin_key') || ''; }
 
-function tryLogin() {
+async function tryLogin() {
   const input = document.getElementById('codeInput').value.trim();
-  if (simpleHash(input) === CODE_HASH) {
+  if (!input) return;
+  sessionStorage.setItem('ko_admin_key', input);
+  const ok = await loadData();
+  if (ok) {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
-    sessionStorage.setItem('ko_auth', '1');
-    loadData();
   } else {
+    sessionStorage.removeItem('ko_admin_key');
     document.getElementById('loginError').style.display = 'block';
     document.getElementById('codeInput').value = '';
     document.getElementById('codeInput').focus();
@@ -159,14 +156,16 @@ document.getElementById('codeInput').addEventListener('keydown', function(e) {
   if (e.key === 'Enter') tryLogin();
 });
 
-if (sessionStorage.getItem('ko_auth') === '1') {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('dashboard').style.display = 'block';
-  loadData();
+if (adminKey()) {
+  loadData().then(ok => {
+    if (ok) {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+    } else {
+      sessionStorage.removeItem('ko_admin_key');
+    }
+  });
 }
-
-const SB_URL = 'https://gasaitelsorrofjajnfj.supabase.co';
-const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdhc2FpdGVsc29ycm9mamFqbmZqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgxODQ5MTgsImV4cCI6MjA5Mzc2MDkxOH0.j6YUdEGsqmUBvyZYEDD0pvc56nyeOUZWcR2q0yg8RUM';
 
 let allData = [];
 let sortCol = 7, sortAsc = false;
@@ -174,16 +173,19 @@ let tierChartInstance = null, ovrChartInstance = null;
 
 async function loadData() {
   try {
-    const r = await fetch(SB_URL + '/rest/v1/questionnaire_responses?select=name,email,preferred_username,ovr,tier,experience,level,frequency,created_at&order=created_at.desc', {
-      headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+    const r = await fetch(API_BASE + '/admin/signups', {
+      headers: { 'X-Admin-Key': adminKey() }
     });
-    if (!r.ok) throw new Error('Status ' + r.status);
-    allData = await r.json();
+    if (!r.ok) return false;
+    const data = await r.json();
+    allData = data.signups || [];
     renderStats();
     renderCharts();
     renderTable();
+    return true;
   } catch (e) {
     document.getElementById('tableBody').innerHTML = '<tr><td colspan="8" style="text-align:center;color:#e53e3e;padding:30px;">Error: ' + e.message + '</td></tr>';
+    return false;
   }
 }
 
