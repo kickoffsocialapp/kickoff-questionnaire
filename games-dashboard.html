@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KickOff - Games Dashboard</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8f9fa; color: #1a1a1a; }
+
+/* Login gate */
+#login-screen {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #0a0f0a 0%, #1a2e1a 100%);
+}
+.login-box {
+  background: #0F170B; border: 1px solid #416244; border-radius: 20px;
+  padding: 40px 32px; width: 340px; text-align: center;
+}
+.login-box h1 { color: #fafafa; font-size: 22px; font-weight: 800; margin-bottom: 4px; }
+.login-box .sub { color: #888; font-size: 12px; margin-bottom: 28px; }
+.login-box input {
+  width: 100%; padding: 12px 16px; border: 1px solid #416244; border-radius: 10px;
+  background: #152713; color: #fafafa; font-size: 14px; outline: none;
+  font-family: inherit; margin-bottom: 12px; text-align: center; letter-spacing: 2px;
+}
+.login-box input::placeholder { color: hsl(240, 5%, 35%); letter-spacing: 0; }
+.login-box input:focus { border-color: #4bff60; }
+.login-box button {
+  width: 100%; padding: 12px; border-radius: 10px; border: none;
+  background: #4bff60; color: #0F170B; font-size: 14px; font-weight: 700;
+  cursor: pointer; font-family: inherit;
+}
+.login-box button:hover { background: #3de050; }
+.login-box .error { color: #FF4444; font-size: 12px; margin-top: 8px; display: none; }
+
+/* Dashboard */
+#dashboard { display: none; padding: 20px; max-width: 1300px; margin: 0 auto; }
+h1.dash-title { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+.subtitle { font-size: 13px; color: #666; margin-bottom: 20px; }
+.stats-row { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+.stat-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 10px; padding: 14px 18px; flex: 1; min-width: 110px; }
+.stat-val { font-size: 26px; font-weight: 800; color: #1a1a1a; }
+.stat-label { font-size: 11px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+.toolbar { display: flex; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; align-items: center; }
+.search-bar {
+  flex: 1; min-width: 220px; padding: 10px 14px; border: 1px solid #e0e0e0; border-radius: 8px;
+  font-size: 13px; outline: none; font-family: inherit;
+}
+.search-bar:focus { border-color: #4bff60; }
+.filter-btn {
+  padding: 9px 16px; border-radius: 8px; border: 1px solid #e0e0e0; background: #fff;
+  font-size: 12px; font-weight: 600; cursor: pointer; font-family: inherit; color: #555;
+}
+.filter-btn.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+.dl-btn {
+  padding: 9px 16px; border-radius: 8px; border: none; background: #1C61A8; color: #fff;
+  font-size: 12px; font-weight: 700; cursor: pointer; font-family: inherit;
+}
+.dl-btn:hover { background: #174f8a; }
+.dl-btn.green { background: #16a34a; }
+.dl-btn.green:hover { background: #128a3e; }
+.table-card { background: #fff; border: 1px solid #e0e0e0; border-radius: 10px; padding: 16px; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;
+     color: #888; font-weight: 600; padding: 8px 10px; border-bottom: 2px solid #eee; cursor: pointer; user-select: none; white-space: nowrap; }
+th:hover { color: #333; }
+td { padding: 9px 10px; border-bottom: 1px solid #f0f0f0; vertical-align: top; }
+tr.game-row { cursor: pointer; }
+tr.game-row:hover td { background: #fafcf9; }
+.code { font-family: ui-monospace, Menlo, monospace; font-weight: 700; font-size: 12px; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+.badge.discover { background: #e0edfa; color: #1C61A8; }
+.badge.group { background: #eee; color: #555; }
+.badge.OPEN, .badge.NEXT { background: #dcfce7; color: #16a34a; }
+.badge.FULL, .badge.LIVE { background: #fef9c3; color: #a16207; }
+.badge.PAST, .badge.COMPLETED, .badge.SCORING { background: #eee; color: #666; }
+.badge.CANCELLED { background: #fee2e2; color: #dc2626; }
+.money { font-weight: 700; }
+.money.pos { color: #16a34a; }
+.money.neg { color: #dc2626; }
+.detail-row td { background: #f8faf7; padding: 12px 16px; }
+.detail-row .players { font-size: 12px; color: #555; margin-bottom: 8px; }
+.pay-table { width: 100%; font-size: 12px; margin-top: 4px; }
+.pay-table th { font-size: 9px; padding: 4px 8px; cursor: default; }
+.pay-table td { padding: 5px 8px; border-bottom: 1px solid #eee; }
+.empty { text-align: center; color: #999; padding: 30px; font-size: 13px; }
+.logout { background: none; border: none; color: #888; font-size: 11px; cursor: pointer; text-decoration: underline; font-family: inherit; }
+</style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-box">
+    <h1>KICKOFF</h1>
+    <p class="sub">Games &amp; Payments Dashboard</p>
+    <input type="password" id="keyInput" placeholder="Admin key" autofocus>
+    <button onclick="tryLogin()">Enter</button>
+    <p class="error" id="loginError">Invalid admin key</p>
+  </div>
+</div>
+
+<div id="dashboard">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+    <div>
+      <h1 class="dash-title">Games Dashboard</h1>
+      <p class="subtitle" id="subtitle">Loading…</p>
+    </div>
+    <button class="logout" onclick="logout()">Log out</button>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-val" id="statTotal">–</div><div class="stat-label">Total games</div></div>
+    <div class="stat-card"><div class="stat-val" id="statDiscover">–</div><div class="stat-label">Discover</div></div>
+    <div class="stat-card"><div class="stat-val" id="statGroup">–</div><div class="stat-label">Group</div></div>
+    <div class="stat-card"><div class="stat-val" id="statCollected">–</div><div class="stat-label">Collected</div></div>
+    <div class="stat-card"><div class="stat-val" id="statRefunded">–</div><div class="stat-label">Refunded</div></div>
+  </div>
+
+  <div class="toolbar">
+    <input class="search-bar" id="search" placeholder="Search by code, organizer, player, venue…" oninput="render()">
+    <button class="filter-btn active" data-f="all" onclick="setFilter('all')">All</button>
+    <button class="filter-btn" data-f="discover" onclick="setFilter('discover')">Discover</button>
+    <button class="filter-btn" data-f="group" onclick="setFilter('group')">Group</button>
+    <button class="dl-btn" onclick="downloadCsv('games.csv')">⬇ Games CSV</button>
+    <button class="dl-btn green" onclick="downloadCsv('payments.csv')">⬇ Payments CSV</button>
+  </div>
+
+  <div class="table-card">
+    <table>
+      <thead><tr>
+        <th onclick="setSort('gameCode')">Code</th>
+        <th onclick="setSort('type')">Type</th>
+        <th onclick="setSort('datetime')">Date</th>
+        <th onclick="setSort('venue')">Venue</th>
+        <th onclick="setSort('organizer')">Organizer</th>
+        <th onclick="setSort('playerCount')">Players</th>
+        <th onclick="setSort('status')">Status</th>
+        <th onclick="setSort('totalCollected')">Collected</th>
+        <th onclick="setSort('totalRefunded')">Refunded</th>
+      </tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div class="empty" id="empty" style="display:none;">No games match your search.</div>
+  </div>
+</div>
+
+<script>
+const API_BASE = "https://web-production-2d2ae.up.railway.app";
+let games = [];
+let filter = "all";
+let sortKey = "datetime", sortDir = -1;
+let expanded = new Set();
+
+function key() { return sessionStorage.getItem("ko_admin_key") || ""; }
+
+async function tryLogin() {
+  const k = document.getElementById("keyInput").value.trim();
+  if (!k) return;
+  sessionStorage.setItem("ko_admin_key", k);
+  const ok = await loadData();
+  if (ok) {
+    document.getElementById("login-screen").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
+  } else {
+    sessionStorage.removeItem("ko_admin_key");
+    document.getElementById("loginError").style.display = "block";
+  }
+}
+
+function logout() {
+  sessionStorage.removeItem("ko_admin_key");
+  location.reload();
+}
+
+async function loadData() {
+  try {
+    const r = await fetch(API_BASE + "/admin/games", { headers: { "X-Admin-Key": key() } });
+    if (!r.ok) return false;
+    const data = await r.json();
+    games = data.games.map(g => ({ ...g, playerCount: g.players.length }));
+    document.getElementById("subtitle").textContent =
+      games.length + " games · updated " + new Date(data.generatedAt + "Z").toLocaleString();
+    renderStats();
+    render();
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+function renderStats() {
+  const d = games.filter(g => g.type === "discover").length;
+  const collected = games.reduce((s, g) => s + g.totalCollected, 0);
+  const refunded = games.reduce((s, g) => s + g.totalRefunded, 0);
+  document.getElementById("statTotal").textContent = games.length;
+  document.getElementById("statDiscover").textContent = d;
+  document.getElementById("statGroup").textContent = games.length - d;
+  document.getElementById("statCollected").textContent = "£" + collected.toFixed(2);
+  document.getElementById("statRefunded").textContent = "£" + refunded.toFixed(2);
+}
+
+function setFilter(f) {
+  filter = f;
+  document.querySelectorAll(".filter-btn").forEach(b => b.classList.toggle("active", b.dataset.f === f));
+  render();
+}
+
+function setSort(k) {
+  if (sortKey === k) sortDir *= -1; else { sortKey = k; sortDir = 1; }
+  render();
+}
+
+function fmtDate(s) {
+  if (!s) return "–";
+  const d = new Date(s);
+  return isNaN(d) ? s : d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "2-digit" }) +
+    " " + d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+}
+
+function esc(s) {
+  return String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+function render() {
+  const q = document.getElementById("search").value.trim().toLowerCase();
+  let rows = games.filter(g => filter === "all" || g.type === filter);
+  if (q) {
+    rows = rows.filter(g =>
+      [g.gameCode, g.organizer, g.venue, g.status, ...g.players, ...g.payments.map(p => p.player)]
+        .join(" ").toLowerCase().includes(q));
+  }
+  rows.sort((a, b) => {
+    const va = a[sortKey], vb = b[sortKey];
+    return (va > vb ? 1 : va < vb ? -1 : 0) * sortDir;
+  });
+
+  const tbody = document.getElementById("tbody");
+  tbody.innerHTML = rows.map(g => {
+    const isOpen = expanded.has(g.id);
+    let html = `<tr class="game-row" onclick="toggle('${g.id}')">
+      <td class="code">${esc(g.gameCode)}</td>
+      <td><span class="badge ${g.type}">${g.type}</span></td>
+      <td>${fmtDate(g.datetime)}</td>
+      <td>${esc(g.venue) || "–"}</td>
+      <td>${esc(g.organizer)}</td>
+      <td>${g.playerCount}${g.maxPlayers ? "/" + g.maxPlayers : ""}</td>
+      <td><span class="badge ${esc(g.status)}">${esc(g.status) || "–"}</span></td>
+      <td class="money ${g.totalCollected > 0 ? "pos" : ""}">£${g.totalCollected.toFixed(2)}</td>
+      <td class="money ${g.totalRefunded > 0 ? "neg" : ""}">£${g.totalRefunded.toFixed(2)}</td>
+    </tr>`;
+    if (isOpen) {
+      const pays = g.payments.length
+        ? `<table class="pay-table"><thead><tr><th>Player</th><th>Amount</th><th>Status</th><th>Paid at</th><th>Stripe intent</th></tr></thead><tbody>` +
+          g.payments.map(p => `<tr><td>${esc(p.player)}</td><td>£${p.amount.toFixed(2)}</td><td>${esc(p.status)}</td><td>${fmtDate(p.createdAt)}</td><td class="code" style="font-size:10px">${esc(p.paymentIntentId) || "–"}</td></tr>`).join("") +
+          `</tbody></table>`
+        : `<div style="font-size:12px;color:#999;">No payment records for this game.</div>`;
+      html += `<tr class="detail-row"><td colspan="9">
+        <div class="players"><strong>Players (${g.playerCount}):</strong> ${g.players.map(esc).join(", ") || "none"}</div>
+        ${pays}
+        <div style="font-size:10px;color:#aaa;margin-top:8px;">Game ID: ${esc(g.id)} · Created: ${fmtDate(g.createdAt)}</div>
+      </td></tr>`;
+    }
+    return html;
+  }).join("");
+  document.getElementById("empty").style.display = rows.length ? "none" : "block";
+}
+
+function toggle(id) {
+  expanded.has(id) ? expanded.delete(id) : expanded.add(id);
+  render();
+}
+
+async function downloadCsv(which) {
+  const r = await fetch(API_BASE + "/admin/" + which, { headers: { "X-Admin-Key": key() } });
+  if (!r.ok) { alert("Download failed — check your admin key."); return; }
+  const blob = await r.blob();
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "kickoff-" + which.replace(".csv", "") + "-" + new Date().toISOString().slice(0, 10) + ".csv";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+document.getElementById("keyInput").addEventListener("keydown", e => { if (e.key === "Enter") tryLogin(); });
+
+if (key()) {
+  loadData().then(ok => {
+    if (ok) {
+      document.getElementById("login-screen").style.display = "none";
+      document.getElementById("dashboard").style.display = "block";
+    } else {
+      sessionStorage.removeItem("ko_admin_key");
+    }
+  });
+}
+</script>
+</body>
+</html>
