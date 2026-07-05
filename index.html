@@ -343,7 +343,8 @@ function render(){
     h+='<div class="waitlist-card">';
     h+='<div class="waitlist-emoji">&#127941;</div>';
     h+='<p class="waitlist-title">Welcome to the waitlist!</p>';
-    h+='<p class="waitlist-ovr">Your starting OVR: '+submittedOvr+'</p>';
+    h+='<p class="waitlist-ovr">Your starting OVR</p>';
+    h+='<p class="result-ovr" style="margin:2px 0 16px;">'+submittedOvr+'</p>';
     h+='<p class="waitlist-msg">You\'re on the list, '+playerName.split(" ")[0]+'. When KickOff launches, we\'ll send you an email so you can download the app. Your starting rating of <strong>'+submittedOvr+'</strong> will be waiting for you — ready to go from your very first match.</p>';
     if(playerUsername){
       h+='<p class="waitlist-username">Your username: <strong>@'+playerUsername+'</strong></p>';
@@ -422,23 +423,17 @@ function render(){
 
     h+='<div class="result-card">';
     h+='<p class="result-name">'+playerName+'</p>';
-    h+='<p class="result-ovr">'+ovr+'</p>';
-    h+='<p class="result-tier">'+tier+'</p>';
-
-    h+='<div class="stat-row">';
-    h+='<div class="stat-card"><div class="stat-val">'+ovr+'</div><div class="stat-label">OVR</div></div>';
-    h+='<div class="stat-card"><div class="stat-val" style="font-size:14px;">'+tier+'</div><div class="stat-label">Tier</div></div>';
-    h+='<div class="stat-card"><div class="stat-val" style="font-size:14px;">'+q2text.split(" ")[0]+'</div><div class="stat-label">Frequency</div></div>';
-    h+='</div>';
+    h+='<p class="result-ovr" style="letter-spacing:4px;">&#128274;</p>';
+    h+='<p class="result-tier">Your starting rating is ready</p>';
 
     h+='<div class="result-details">';
     h+='<div class="result-row"><span class="label">Experience</span><span class="value">'+q1text+'</span></div>';
     h+='<div class="result-row"><span class="label">Level</span><span class="value">'+brText+'</span></div>';
     h+='<div class="result-row"><span class="label">Frequency</span><span class="value">'+q2text+'</span></div>';
     h+='</div>';
-    h+='<p class="result-note">This is your starting point. The more games you play on KickOff, the more accurate your rating becomes.</p>';
+    h+='<p class="result-note">Join the waitlist to reveal your starting OVR &mdash; it\'ll be waiting for you, ready from your very first match when KickOff launches.</p>';
 
-    h+='<button class="btn btn-submit" id="submitBtn" onclick="submitResult()">Join the waitlist</button>';
+    h+='<button class="btn btn-submit" id="submitBtn" onclick="submitResult()">Reveal my OVR &amp; join</button>';
     h+='<p id="submitError" style="font-size:12px;color:#FF4444;text-align:center;margin-top:8px;display:none;"></p>';
     h+='<p style="font-size:10px;color:hsl(240,5%,50%);text-align:center;margin-top:12px;line-height:1.5;">By joining, you agree to share your name, email and username with KickOff. We\'ll only ever email you about the app launch — no spam, no junk, no constant emails. We won\'t share your info with anyone.</p>';
 
@@ -584,7 +579,7 @@ function submitResult(){
     }
   }).catch(function(e){
     btn.disabled=false;
-    btn.textContent="Join the waitlist";
+    btn.textContent="Reveal my OVR & join";
     btn.classList.remove("btn-submitting");
     if(e.message==="duplicate"){
       errEl.textContent="This email is already on the waitlist!";
