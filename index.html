@@ -127,7 +127,7 @@ input, button, select, textarea { font-family: 'Inter', sans-serif; }
 
 /* Result card */
 .result-card { text-align: center; padding: 20px 0; }
-.result-name { font-size: 11px; color: hsl(240, 5%, 55%); margin-bottom: 3px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+.result-name { font-size: 11px; color: hsl(240, 5%, 55%); margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.2px; font-weight: 600; }
 .result-ovr { font-size: 56px; font-weight: 800; color: hsl(0, 0%, 98%); line-height: 1; }
 .result-tier { font-size: 13px; color: #4bff60; font-weight: 700; margin-top: 3px; text-transform: uppercase; letter-spacing: 0.5px; }
 .result-details { margin-top: 20px; padding-top: 14px; border-top: 1px solid #416244; text-align: left; }
@@ -423,7 +423,6 @@ function render(){
 
     h+='<div class="result-card">';
     h+='<p class="result-name">'+playerName+'</p>';
-    h+='<p class="result-ovr" style="letter-spacing:4px;">&#128274;</p>';
     h+='<p class="result-tier">Your starting rating is ready</p>';
 
     h+='<div class="result-details">';
@@ -433,7 +432,7 @@ function render(){
     h+='</div>';
     h+='<p class="result-note">Join the waitlist to reveal your starting OVR &mdash; it\'ll be waiting for you, ready from your very first match when KickOff launches.</p>';
 
-    h+='<button class="btn btn-submit" id="submitBtn" onclick="submitResult()">Reveal my OVR &amp; join</button>';
+    h+='<button class="btn btn-submit" id="submitBtn" onclick="submitResult()">Reveal my OVR rating</button>';
     h+='<p id="submitError" style="font-size:12px;color:#FF4444;text-align:center;margin-top:8px;display:none;"></p>';
     h+='<p style="font-size:10px;color:hsl(240,5%,50%);text-align:center;margin-top:12px;line-height:1.5;">By joining, you agree to share your name, email and username with KickOff. We\'ll only ever email you about the app launch — no spam, no junk, no constant emails. We won\'t share your info with anyone.</p>';
 
@@ -579,7 +578,7 @@ function submitResult(){
     }
   }).catch(function(e){
     btn.disabled=false;
-    btn.textContent="Reveal my OVR & join";
+    btn.textContent="Reveal my OVR rating";
     btn.classList.remove("btn-submitting");
     if(e.message==="duplicate"){
       errEl.textContent="This email is already on the waitlist!";
