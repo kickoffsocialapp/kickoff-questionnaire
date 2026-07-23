@@ -5,30 +5,45 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>KickOff — Code of Conduct</title>
 <style>
-:root{--bg:#0a0f0a;--card:#0F170B;--border:#243a24;--accent:#4bff60;--text:#e8ebe8;--muted:#9aa79a;--head:#ffffff}
+:root{--bg:#040F04;--card:rgba(255,255,255,.04);--line:rgba(255,255,255,.08);--green:#4bfe5f;--greenDeep:#152713;--greenMid:#416244;--text:#ffffff;--head:#ffffff;--muted:rgba(255,255,255,.62);--muted2:rgba(255,255,255,.42);--accent:#4bfe5f;--max:820px}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;font-size:15px}
-.wrap{max-width:760px;margin:0 auto;padding:28px 20px 60px}
-.top{border-bottom:1px solid var(--border);padding-bottom:18px;margin-bottom:24px}
-.brand{color:var(--accent);font-weight:800;font-size:15px;letter-spacing:2px;text-transform:uppercase}
-h1{color:var(--head);font-size:26px;font-weight:800;margin:6px 0 4px}
-.sub{color:var(--muted);font-size:13px}
-.meta{color:var(--muted);font-size:13px;margin:14px 0 4px}
-h2{color:var(--head);font-size:18px;font-weight:700;margin:26px 0 8px}
-p{margin:0 0 12px}
-.lead{color:var(--muted)}
-ul{margin:0 0 12px;padding-left:22px}
-li{margin:0 0 8px}
-.def{margin:0 0 8px}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.65;font-size:15.5px;-webkit-font-smoothing:antialiased}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:radial-gradient(1100px 560px at 50% -8%,rgba(75,254,95,.10),transparent 62%),var(--bg)}
+.topbar{position:sticky;top:0;z-index:50;background:rgba(21,39,19,.35);backdrop-filter:blur(18px) saturate(1.5);-webkit-backdrop-filter:blur(18px) saturate(1.5);border-bottom:1px solid var(--line)}
+.topbar-in{max-width:1120px;margin:0 auto;padding:0 20px;height:64px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.logo{color:var(--green);font-weight:900;font-size:15px;letter-spacing:2.5px;text-transform:uppercase;text-decoration:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;background:var(--greenDeep);border:1px solid var(--greenMid);color:#fff;border-radius:12px;padding:9px 16px;font-size:11.5px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;text-decoration:none;transition:background .18s}
+.btn:hover{background:#1b3318;text-decoration:none}
+.wrap{max-width:var(--max);margin:0 auto;padding:46px 20px 84px}
+.top{padding-bottom:24px;margin-bottom:28px;border-bottom:1px solid var(--line)}
+.brand{display:none}
+h1{font-size:40px;font-weight:900;letter-spacing:-1.2px;line-height:1.06;margin:0 0 10px}
+.sub{color:var(--muted);font-size:14px}
+.nav{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
+.nav a{font-size:12.5px;font-weight:600;color:var(--muted);text-decoration:none;padding:7px 14px;border:1px solid var(--line);border-radius:999px;background:var(--card);transition:.18s}
+.nav a:hover{color:#fff;border-color:var(--greenMid);text-decoration:none}
+.meta{color:var(--muted2);font-size:12.5px;margin:0 0 26px;text-transform:uppercase;letter-spacing:1.4px;font-weight:600}
+.lead{color:var(--muted);font-size:16.5px;line-height:1.7;margin:0 0 6px}
+h2{color:var(--head);font-size:19px;font-weight:800;letter-spacing:-.2px;margin:36px 0 10px}
+p{margin:0 0 13px;color:var(--muted)}
+ul{margin:0 0 14px;padding-left:20px}
+li{margin:0 0 9px;color:var(--muted)}
+strong,b{color:var(--text);font-weight:600}
+.def{margin:0 0 10px;color:var(--muted)}
 .def b{color:var(--head)}
-.sub-c{padding-left:16px;color:var(--text)}
-a{color:var(--accent)}
-.nav{display:flex;gap:16px;flex-wrap:wrap;margin-top:16px;font-size:13px}
-.footer{border-top:1px solid var(--border);margin-top:36px;padding-top:16px;color:var(--muted);font-size:12px;text-align:center}
-strong{color:var(--head)}
+.sub-c{padding-left:14px;color:var(--muted)}
+a{color:var(--green);text-decoration:none}
+a:hover{text-decoration:underline}
+.footer{border-top:1px solid var(--line);margin-top:52px;padding-top:24px;color:var(--muted2);font-size:12px;text-align:center;line-height:1.8}
+@media(max-width:600px){h1{font-size:31px}.wrap{padding:34px 18px 64px}.topbar-in{height:58px}}
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
+<nav class="topbar"><div class="topbar-in"><a class="logo" href="https://www.kickoffsocialapp.co.uk/">KickOff</a><a class="btn" href="https://www.kickoffsocialapp.co.uk/">Back to site</a></div></nav>
 <div class="wrap">
   <div class="top">
     <div class="brand">KickOff</div>
